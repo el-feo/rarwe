@@ -13,10 +13,9 @@ export default Ember.Route.extend({
       band.save().then(function () {
         controller.set('name', '');
         route.transitionTo('band.songs', band);
-      })
+      });
     },
     didTransition: function () {
-      var band = this.modelFor('band');
       Ember.$(document).attr('title', 'Bands - Rock & Roll');
     },
   }
