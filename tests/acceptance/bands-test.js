@@ -1,10 +1,8 @@
 import Ember from 'ember';
-import {
-  module,
-  test
-} from 'qunit';
+import { module, test } from 'qunit';
 import startApp from 'rarwe/tests/helpers/start-app';
 import Pretender from 'pretender';
+import httpStubs from '../helpers/http-stubs';
 
 var application,
     server;
@@ -31,7 +29,7 @@ test('List bands', function(assert) {
                 });
       return [200, {"Content-Type": "application/json"}, bands];
     });
-  })
+  });
   visit('/bands');
 
   andThen(function() {
@@ -42,32 +40,23 @@ test('List bands', function(assert) {
 });
 
 test('Create a new band', function (assert) {
-  server = new Pretender(function () {
-    this.get('/bands', function (request) {
-      var bands = JSON.stringify({
-                    bands: [
-                    { id: 1, name: 'Radiohead' }
-                  ]
-                });
-      return [200, {"Content-Type": "application/json"}, bands];
+  server = new Pretender(function() {
+    httpStubs.stubBands(this, {
+      bands: [
+        { id: 1, name: 'Radiohead' }
+      ]
     });
+    httpStubs.stubCreateBand(this, 2);
+  });
 
-    this.post('/bands', function (request) {
-      var band = JSON.stringify({
-        band: { id: 2, name: 'Long Distance Calling' }
-      });
-      return [200, {"Content-Type": "application/json"}, band];
-    });
+  visit('/bands');
+  fillIn('.new-band', 'Long Distance Calling');
+  click('.new-band-button');
 
-    visit('/bands');
-    fillIn('.new-band', 'Long Distance Calling');
-    click('.new-band-button');
-
-    andThen(function() {
-      assert.equal(find('.band-link').length, 2, "All band-links are rendered");
-      assert.equal(find('.band-link:last').text().trim(), 'Long Distance Calling', "Created band appears at the end of the list");
-      assert.equal(find('.nav a.active:contains("Songs")').length, 1, "The songs tab is active");
-    });
+  andThen(function() {
+    assertLength(assert, '.band-link', 2, "All band links are rendered");
+    assertTrimmedText(assert, '.band-link:last', 'Long Distance Calling', "Created band appears at end of the list");
+    assertElement(assert, '.nav a.active:contains("Songs")', "The Songs tab is active");
   });
 });
 
@@ -89,11 +78,12 @@ test('Create a new song in two steps', function (assert) {
     });
   });
 
-    visit('/');
-    click('.band-link:contains("Radiohead")');
+    // visit('/');
+    // click('.band-link:contains("Radiohead")');
+    selectBand('Radiohead');
     click('a:contains("create one")');
     fillIn('.new-song', 'Killer Cars');
-    triggerEvent('.new-song-form', 'submit');
+    submit('.new-song-form');
 
     andThen(function() {
       assert.equal(find('.songs .song:contains("Killer Cars")').length, 1, "Creates the song and displays it in the list");
