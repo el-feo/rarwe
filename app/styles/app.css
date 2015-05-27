@@ -60,21 +60,14 @@ html, body {
   display: block;
 }
 
-.new-band {
-  width: 82%;
-}
-
 .new-band-button {
-  float: right;
+  margin-left: 5px;
   padding: 3px 10px;
 }
 
-.new-song {
-  width: 88%;
-}
-
 .new-song-button {
-  margin-left: 20px;
+  margin-left: 5px;
+  padding: 3px 10px;
 }
 
 .rating-panel {
@@ -88,7 +81,7 @@ html, body {
   margin-left: 3px;
 }
 
-.sorting-panel {
+.song-filter-search-panel {
   /*
    Copied from Bootstrap's .list-group-item
    */
@@ -99,7 +92,7 @@ html, body {
   display: block;
 }
 
-.sorting-panel .active .sorting-button {
+.song-filter-search-panel .active .sorting-button {
   /* Copied from Bootstrap's .list-group-item.active  */
   z-index: 2;
   color: #fff;
@@ -107,13 +100,22 @@ html, body {
   border-color: #428bca;
 }
 
-.sorting-panel .sorting-link + .sorting-link {
+.song-filter-search-panel .sorting-link + .sorting-link {
   margin-left: 5px;
+}
+
+.sorting-panel {
+  float: left;
+}
+
+@media (max-width: 690px) {
+  .sorting-panel {
+    margin-bottom: 5px;
+  }
 }
 
 .search-panel {
   display: inline-block;
-  width: 30%;
   float: right;
 }
 
