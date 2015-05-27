@@ -1,4 +1,5 @@
 import Ember from 'ember';
+import { capitalizeWords } from '../../helpers/capitalize-words';
 
 export default Ember.Controller.extend({
   needs: ['band'],
@@ -26,6 +27,11 @@ export default Ember.Controller.extend({
   sortedSongs: Ember.computed.sort('matchingSongs', 'sortProperties'),
 
   songCreationStarted: false,
+
+  newSongPlaceholder: function() {
+    var band = this.get('controllers.band.model');
+    return "New %@ song".fmt(capitalizeWords(band.get('name')));
+  }.property('controllers.band.model.name'),
 
   canCreateSong: function () {
     return this.get('songCreationStarted') || this.get('model.length');
